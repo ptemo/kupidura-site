@@ -219,6 +219,11 @@ button {
   object-position: 50% 73%;
 }
 
+.js [data-scroll-motion] {
+  translate: 0 var(--scroll-motion-y, 0px);
+  will-change: translate;
+}
+
 .about {
   padding: 0 24px clamp(86px, 13vh, 136px);
   text-align: center;
@@ -464,6 +469,11 @@ html.js [data-reveal].is-visible {
   html.js [data-reveal] {
     opacity: 1;
     transform: none;
+  }
+
+  .js [data-scroll-motion] {
+    translate: none !important;
+    will-change: auto;
   }
 
   ::view-transition-old(root),
