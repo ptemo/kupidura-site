@@ -127,6 +127,9 @@ function setupScrollMotion() {
   let frameId = 0;
   let previousFrameTime = 0;
   let scrollVelocity = 0;
+  const springStrength = 3.8;
+  const textTravelRate = 0.55;
+  const photoCounterMotion = 0.30;
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -139,12 +142,11 @@ function setupScrollMotion() {
 
     // Critically damped motion keeps the page moving as one continuous surface:
     // no instant stop followed by a separate element animation.
-    const omega = 3.8;
     const displacement = smoothScrollY - targetScrollY;
-    const springStep = (scrollVelocity + omega * displacement) * elapsedSeconds;
-    const decay = Math.exp(-omega * elapsedSeconds);
+    const springStep = (scrollVelocity + springStrength * displacement) * elapsedSeconds;
+    const decay = Math.exp(-springStrength * elapsedSeconds);
     const nextDisplacement = (displacement + springStep) * decay;
-    scrollVelocity = (scrollVelocity - omega * springStep) * decay;
+    scrollVelocity = (scrollVelocity - springStrength * springStep) * decay;
     smoothScrollY = targetScrollY + nextDisplacement;
 
     const scrollOffset = targetScrollY - smoothScrollY;
@@ -160,13 +162,13 @@ function setupScrollMotion() {
       const motionStart = Math.max(0, sectionTop - window.innerHeight * 0.5);
       const textTravel = clamp(smoothScrollY - motionStart, 0, sectionHeight);
       // Keep the stronger type drift, then let the shared spring carry it out slowly.
-      element.style.setProperty("--scroll-motion-y", (-textTravel * 0.55).toFixed(2) + "px");
+      element.style.setProperty("--scroll-motion-y", (-textTravel * textTravelRate).toFixed(2) + "px");
     });
 
-    // Counter-move the portrait by part of the page's travel. Its frame therefore
-    // crosses the viewport more slowly than the text and stays visible longer.
-    // Keep the photo at a steady slower rate; a hard cap made its motion hitch.
-    const parallax = Math.max(0, smoothScrollY - heroTop) * 0.22;
+    // Use the same damped scroll position as the text, then counter-move the
+    // portrait more strongly so it crosses the viewport more slowly. Do not cap
+    // the travel: the cap created a visible hitch when the photo reached it.
+    const parallax = Math.max(0, smoothScrollY - heroTop) * photoCounterMotion;
     photo.style.setProperty("--scroll-motion-y", parallax.toFixed(2) + "px");
 
     const stillMoving = Math.abs(targetScrollY - smoothScrollY) > 0.08 || Math.abs(scrollVelocity) > 0.08;
