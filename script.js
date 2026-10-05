@@ -114,20 +114,20 @@ function setupScrollMotion() {
   const hero = document.querySelector(".hero");
   const textElements = document.querySelectorAll('[data-scroll-motion="text"]');
   const photo = document.querySelector('[data-scroll-motion="photo"]');
-  const scrollTargets = [document.querySelector(".site-header"), document.querySelector("main")].filter(Boolean);
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  if (!hero || !photo || !scrollTargets.length || prefersReducedMotion.matches) {
+  if (!hero || !photo || !textElements.length || prefersReducedMotion.matches) {
     return;
   }
 
   let targetScrollY = window.scrollY;
-  let smoothScrollY = targetScrollY;
+  let smoothTextScrollY = targetScrollY;
+  let smoothPhotoScrollY = targetScrollY;
   let heroTop = hero.offsetTop;
   let frameId = 0;
   let previousFrameTime = 0;
-  let scrollVelocity = 0;
-  const springStrength = 3.8;
+  const textFollowTime = 0.28;
+  const photoFollowTime = 0.16;
   const textTravelRate = 0.55;
   const photoCounterMotion = 0.30;
 
@@ -137,22 +137,19 @@ function setupScrollMotion() {
 
   function renderMotion(timestamp) {
     frameId = 0;
-    const elapsedSeconds = (previousFrameTime ? Math.max(0, timestamp - previousFrameTime) : 16.7) / 1000;
+    const elapsedSeconds = previousFrameTime
+      ? clamp((timestamp - previousFrameTime) / 1000, 0, 0.05)
+      : 1 / 60;
     previousFrameTime = timestamp;
 
-    // Critically damped motion keeps the page moving as one continuous surface:
-    // no instant stop followed by a separate element animation.
-    const displacement = smoothScrollY - targetScrollY;
-    const springStep = (scrollVelocity + springStrength * displacement) * elapsedSeconds;
-    const decay = Math.exp(-springStrength * elapsedSeconds);
-    const nextDisplacement = (displacement + springStep) * decay;
-    scrollVelocity = (scrollVelocity - springStrength * springStep) * decay;
-    smoothScrollY = targetScrollY + nextDisplacement;
+    // Follow the browser's real scroll position with a one-way low-pass filter.
+    // Unlike the old spring, this carries no stored velocity into a direction change.
+    const textBlend = 1 - Math.exp(-elapsedSeconds / textFollowTime);
+    const photoBlend = 1 - Math.exp(-elapsedSeconds / photoFollowTime);
+    smoothTextScrollY += (targetScrollY - smoothTextScrollY) * textBlend;
+    smoothPhotoScrollY += (targetScrollY - smoothPhotoScrollY) * photoBlend;
 
-    const scrollOffset = targetScrollY - smoothScrollY;
-    scrollTargets.forEach(function (element) {
-      element.style.setProperty("--page-scroll-offset", scrollOffset.toFixed(2) + "px");
-    });
+    const textScrollLag = targetScrollY - smoothTextScrollY;
 
     textElements.forEach(function (element) {
       const section = element.closest(".hero, .about");
@@ -160,27 +157,23 @@ function setupScrollMotion() {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight || window.innerHeight;
       const motionStart = Math.max(0, sectionTop - window.innerHeight * 0.5);
-      const textTravel = clamp(smoothScrollY - motionStart, 0, sectionHeight);
-      // Keep the stronger type drift, then let the shared spring carry it out slowly.
-      element.style.setProperty("--scroll-motion-y", (-textTravel * textTravelRate).toFixed(2) + "px");
+      const textTravel = clamp(smoothTextScrollY - motionStart, 0, sectionHeight);
+      const translateY = textScrollLag - textTravel * textTravelRate;
+      element.style.setProperty("--scroll-motion-y", translateY.toFixed(2) + "px");
     });
 
-    // Use the same damped scroll position as the text, then counter-move the
-    // portrait more strongly so it crosses the viewport more slowly. Do not cap
-    // the travel: the cap created a visible hitch when the photo reached it.
-    const parallax = Math.max(0, smoothScrollY - heroTop) * photoCounterMotion;
-    photo.style.setProperty("--scroll-motion-y", parallax.toFixed(2) + "px");
+    const photoScrollLag = targetScrollY - smoothPhotoScrollY;
+    const parallax = Math.max(0, smoothPhotoScrollY - heroTop) * photoCounterMotion;
+    photo.style.setProperty("--scroll-motion-y", (photoScrollLag + parallax).toFixed(2) + "px");
 
-    const stillMoving = Math.abs(targetScrollY - smoothScrollY) > 0.08 || Math.abs(scrollVelocity) > 0.08;
+    const stillMoving = Math.abs(targetScrollY - smoothTextScrollY) > 0.12
+      || Math.abs(targetScrollY - smoothPhotoScrollY) > 0.12;
 
     if (stillMoving) {
       frameId = window.requestAnimationFrame(renderMotion);
     } else {
-      smoothScrollY = targetScrollY;
-      scrollVelocity = 0;
-      scrollTargets.forEach(function (element) {
-        element.style.setProperty("--page-scroll-offset", "0px");
-      });
+      smoothTextScrollY = targetScrollY;
+      smoothPhotoScrollY = targetScrollY;
       previousFrameTime = 0;
     }
   }

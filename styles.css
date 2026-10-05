@@ -78,12 +78,6 @@ button {
   padding: 17px 24px 0;
 }
 
-.js .site-header,
-.js main {
-  translate: 0 var(--page-scroll-offset, 0px);
-  will-change: translate;
-}
-
 .main-nav {
   display: flex;
   justify-content: center;
@@ -479,12 +473,6 @@ html.js [data-reveal].is-visible {
   }
 
   .js [data-scroll-motion] {
-    translate: none !important;
-    will-change: auto;
-  }
-
-  .js .site-header,
-  .js main {
     translate: none !important;
     will-change: auto;
   }
