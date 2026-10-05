@@ -124,7 +124,6 @@ function setupScrollMotion() {
   let targetScrollY = window.scrollY;
   let smoothScrollY = targetScrollY;
   let heroTop = hero.offsetTop;
-  let heroHeight = hero.offsetHeight || window.innerHeight;
   let frameId = 0;
   let previousFrameTime = 0;
   let scrollVelocity = 0;
@@ -135,12 +134,12 @@ function setupScrollMotion() {
 
   function renderMotion(timestamp) {
     frameId = 0;
-    const elapsedSeconds = (previousFrameTime ? clamp(timestamp - previousFrameTime, 0, 50) : 16.7) / 1000;
+    const elapsedSeconds = (previousFrameTime ? Math.max(0, timestamp - previousFrameTime) : 16.7) / 1000;
     previousFrameTime = timestamp;
 
     // Critically damped motion keeps the page moving as one continuous surface:
     // no instant stop followed by a separate element animation.
-    const omega = 18;
+    const omega = 7.5;
     const displacement = smoothScrollY - targetScrollY;
     const springStep = (scrollVelocity + omega * displacement) * elapsedSeconds;
     const decay = Math.exp(-omega * elapsedSeconds);
@@ -159,15 +158,17 @@ function setupScrollMotion() {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight || window.innerHeight;
       const motionStart = Math.max(0, sectionTop - window.innerHeight * 0.5);
-      const textTravel = clamp(smoothScrollY - motionStart, 0, sectionHeight);
-      // Give the typography a clearly faster, but still continuous, glide.
-      element.style.setProperty("--scroll-motion-y", (-textTravel * 0.55).toFixed(2) + "px");
+      const textProgress = clamp((smoothScrollY - motionStart) / sectionHeight, 0, 1);
+      const easedProgress = textProgress * textProgress * (3 - 2 * textProgress);
+      const textTravel = easedProgress * sectionHeight;
+      // Keep the type drift restrained and ease it in and out across the section.
+      element.style.setProperty("--scroll-motion-y", (-textTravel * 0.25).toFixed(2) + "px");
     });
 
     // Counter-move the portrait by part of the page's travel. Its frame therefore
     // crosses the viewport more slowly than the text and stays visible longer.
-    const parallaxLimit = Math.min(heroHeight * 0.42, window.innerHeight * 0.44);
-    const parallax = clamp((smoothScrollY - heroTop) * 0.42, 0, parallaxLimit);
+    // Keep the photo at a steady slower rate; a hard cap made its motion hitch.
+    const parallax = Math.max(0, smoothScrollY - heroTop) * 0.42;
     photo.style.setProperty("--scroll-motion-y", parallax.toFixed(2) + "px");
 
     const stillMoving = Math.abs(targetScrollY - smoothScrollY) > 0.08 || Math.abs(scrollVelocity) > 0.08;
@@ -193,7 +194,6 @@ function setupScrollMotion() {
 
   function updateHeroSize() {
     heroTop = hero.offsetTop;
-    heroHeight = hero.offsetHeight || window.innerHeight;
     scheduleMotion();
   }
 
