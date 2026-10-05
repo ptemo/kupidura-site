@@ -19,10 +19,55 @@ function setTheme(theme) {
   } catch (error) {}
 }
 
+function switchTheme(theme) {
+  const canReveal = typeof document.startViewTransition === "function";
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!canReveal || prefersReducedMotion) {
+    setTheme(theme);
+    return;
+  }
+
+  const buttonRect = themeButton.getBoundingClientRect();
+  const x = buttonRect.left + buttonRect.width / 2;
+  const y = buttonRect.top + buttonRect.height / 2;
+  const corners = [
+    [0, 0],
+    [window.innerWidth, 0],
+    [0, window.innerHeight],
+    [window.innerWidth, window.innerHeight]
+  ];
+  const radius = Math.ceil(Math.max(...corners.map(function (corner) {
+    return Math.hypot(corner[0] - x, corner[1] - y);
+  })));
+
+  root.style.setProperty("--theme-reveal-x", x + "px");
+  root.style.setProperty("--theme-reveal-y", y + "px");
+  root.style.setProperty("--theme-reveal-radius", radius + "px");
+  root.classList.add("theme-changing");
+
+  let transition;
+  try {
+    transition = document.startViewTransition(function () {
+      setTheme(theme);
+    });
+  } catch (error) {
+    root.classList.remove("theme-changing");
+    setTheme(theme);
+    return;
+  }
+
+  function finishTransition() {
+    root.classList.remove("theme-changing");
+  }
+
+  transition.finished.then(finishTransition, finishTransition);
+}
+
 setTheme(root.dataset.theme === "light" ? "light" : "dark");
 
 themeButton.addEventListener("click", function () {
-  setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+  switchTheme(root.dataset.theme === "dark" ? "light" : "dark");
 });
 
 readMoreButton.addEventListener("click", function () {

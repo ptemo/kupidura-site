@@ -1,6 +1,6 @@
 # KUPIDURA — pierwsza wersja strony
 
-Ten statyczny szkic zawiera sekcje HOME i ABOUT, przełącznik jasnego i ciemnego motywu, animację wejścia zdjęcia oraz niezależne, delikatne wejścia napisów. Działa bez instalowania frameworka ani budowania projektu.
+Ten statyczny szkic zawiera sekcje HOME i ABOUT, jedno zdjęcie hero, które prowadzi do ABOUT, przełącznik jasnego i ciemnego motywu z koncentrycznym przejściem oraz niezależne, płynne wejścia napisów bez odbicia. Zdjęcie delikatnie zmniejsza się do docelowego rozmiaru. Strona działa bez instalowania frameworka ani budowania projektu.
 
 ## Podgląd na komputerze
 
@@ -8,7 +8,7 @@ Otwórz plik index.html w przeglądarce. Projekt jest statyczny, więc nie wymag
 
 ## Wrzucenie na GitHub
 
-1. Utwórz publiczne repozytorium, na przykład kupidura-website.
+1. Użyj publicznego repozytorium `kupidura-site`.
 2. Rozpakuj paczkę na komputerze. Do głównego folderu repozytorium prześlij pliki index.html, styles.css, script.js, README.md oraz folder assets. Nie przesyłaj archiwum ZIP jako pojedynczego pliku.
 3. W repozytorium wybierz Settings → Pages.
 4. Ustaw publikowanie z gałęzi main i folderu głównego, a następnie zapisz.
@@ -18,6 +18,6 @@ Repozytorium publiczne oznacza, że kod i pliki graficzne są widoczne. Strona i
 
 ## Pliki graficzne
 
-- assets/kupidura-hero.jpg — portret użyty w HOME i ABOUT.
+- assets/kupidura-hero.jpg — portret użyty w HOME; sekcja ABOUT zaczyna się pod nim.
 - assets/kupidura-logo.svg — logo wektorowe.
 - assets/kupidura-secondary.png — dodatkowe zdjęcie zachowane na kolejne sekcje.
