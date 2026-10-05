@@ -121,38 +121,56 @@ function setupScrollMotion() {
   }
 
   let targetScrollY = window.scrollY;
-  let easedScrollY = targetScrollY;
+  let sampledScrollY = targetScrollY;
   let heroTop = hero.offsetTop;
   let heroHeight = hero.offsetHeight || window.innerHeight;
   let frameId = 0;
   let previousFrameTime = 0;
+  let scrollVelocity = 0;
+  let textOffset = 0;
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
   }
 
+  function easeTo(current, target, elapsed, duration) {
+    return target + (current - target) * Math.exp(-elapsed / duration);
+  }
+
   function renderMotion(timestamp) {
     frameId = 0;
-    const elapsed = previousFrameTime ? Math.min(timestamp - previousFrameTime, 50) : 16.7;
+    const elapsed = previousFrameTime ? clamp(timestamp - previousFrameTime, 0, 50) : 16.7;
     previousFrameTime = timestamp;
 
-    const blend = 1 - Math.exp(-elapsed / 115);
-    easedScrollY += (targetScrollY - easedScrollY) * blend;
-    const stillMoving = Math.abs(targetScrollY - easedScrollY) > 0.2;
-    const inertia = stillMoving ? clamp(targetScrollY - easedScrollY, -46, 46) : 0;
+    const elapsedSeconds = elapsed / 1000;
+    const scrollDelta = targetScrollY - sampledScrollY;
+    sampledScrollY = targetScrollY;
+
+    // Filter wheel and trackpad input before translating elements. This avoids
+    // applying a sudden transform jump when the browser reports a large delta.
+    const instantVelocity = elapsedSeconds > 0 ? scrollDelta / elapsedSeconds : 0;
+    scrollVelocity = easeTo(scrollVelocity, instantVelocity, elapsed, 80);
+    const targetTextOffset = clamp(scrollVelocity * 0.055, -28, 28);
+    textOffset = easeTo(textOffset, targetTextOffset, elapsed, 95);
 
     textElements.forEach(function (element) {
-      element.style.setProperty("--scroll-motion-y", (inertia * 0.78).toFixed(2) + "px");
+      element.style.setProperty("--scroll-motion-y", textOffset.toFixed(2) + "px");
     });
 
-    const progress = clamp((targetScrollY - heroTop) / heroHeight, 0, 1);
-    const parallax = progress * Math.min(105, window.innerHeight * 0.12);
-    photo.style.setProperty("--scroll-motion-y", (parallax + inertia * 0.66).toFixed(2) + "px");
+    // Counter-move the portrait by part of the page's travel. Its frame therefore
+    // crosses the viewport more slowly than the text and stays visible longer.
+    const parallaxLimit = Math.min(heroHeight * 0.3, window.innerHeight * 0.32);
+    const parallax = clamp((targetScrollY - heroTop) * 0.3, 0, parallaxLimit);
+    photo.style.setProperty("--scroll-motion-y", (parallax + textOffset * 0.72).toFixed(2) + "px");
+
+    const stillMoving = Math.abs(scrollVelocity) > 1 ||
+      Math.abs(textOffset - targetTextOffset) > 0.08;
 
     if (stillMoving) {
       frameId = window.requestAnimationFrame(renderMotion);
     } else {
-      easedScrollY = targetScrollY;
+      scrollVelocity = 0;
+      textOffset = 0;
       previousFrameTime = 0;
     }
   }
