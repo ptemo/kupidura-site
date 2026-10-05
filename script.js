@@ -160,7 +160,8 @@ function setupScrollMotion() {
       const sectionHeight = section.offsetHeight || window.innerHeight;
       const motionStart = Math.max(0, sectionTop - window.innerHeight * 0.5);
       const textTravel = clamp(smoothScrollY - motionStart, 0, sectionHeight);
-      element.style.setProperty("--scroll-motion-y", (-textTravel * 0.18).toFixed(2) + "px");
+      // Give the typography a clearly faster, but still continuous, glide.
+      element.style.setProperty("--scroll-motion-y", (-textTravel * 0.55).toFixed(2) + "px");
     });
 
     // Counter-move the portrait by part of the page's travel. Its frame therefore
