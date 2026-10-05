@@ -114,63 +114,71 @@ function setupScrollMotion() {
   const hero = document.querySelector(".hero");
   const textElements = document.querySelectorAll('[data-scroll-motion="text"]');
   const photo = document.querySelector('[data-scroll-motion="photo"]');
+  const scrollTargets = [document.querySelector(".site-header"), document.querySelector("main")].filter(Boolean);
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  if (!hero || !photo || !textElements.length || prefersReducedMotion.matches) {
+  if (!hero || !photo || !scrollTargets.length || prefersReducedMotion.matches) {
     return;
   }
 
   let targetScrollY = window.scrollY;
-  let sampledScrollY = targetScrollY;
+  let smoothScrollY = targetScrollY;
   let heroTop = hero.offsetTop;
   let heroHeight = hero.offsetHeight || window.innerHeight;
   let frameId = 0;
   let previousFrameTime = 0;
   let scrollVelocity = 0;
-  let textOffset = 0;
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
   }
 
-  function easeTo(current, target, elapsed, duration) {
-    return target + (current - target) * Math.exp(-elapsed / duration);
-  }
-
   function renderMotion(timestamp) {
     frameId = 0;
-    const elapsed = previousFrameTime ? clamp(timestamp - previousFrameTime, 0, 50) : 16.7;
+    const elapsedSeconds = (previousFrameTime ? clamp(timestamp - previousFrameTime, 0, 50) : 16.7) / 1000;
     previousFrameTime = timestamp;
 
-    const elapsedSeconds = elapsed / 1000;
-    const scrollDelta = targetScrollY - sampledScrollY;
-    sampledScrollY = targetScrollY;
+    // Critically damped motion keeps the page moving as one continuous surface:
+    // no instant stop followed by a separate element animation.
+    const omega = 18;
+    const displacement = smoothScrollY - targetScrollY;
+    const springStep = (scrollVelocity + omega * displacement) * elapsedSeconds;
+    const decay = Math.exp(-omega * elapsedSeconds);
+    const nextDisplacement = (displacement + springStep) * decay;
+    scrollVelocity = (scrollVelocity - omega * springStep) * decay;
+    smoothScrollY = targetScrollY + nextDisplacement;
 
-    // Filter wheel and trackpad input before translating elements. This avoids
-    // applying a sudden transform jump when the browser reports a large delta.
-    const instantVelocity = elapsedSeconds > 0 ? scrollDelta / elapsedSeconds : 0;
-    scrollVelocity = easeTo(scrollVelocity, instantVelocity, elapsed, 80);
-    const targetTextOffset = clamp(scrollVelocity * 0.055, -28, 28);
-    textOffset = easeTo(textOffset, targetTextOffset, elapsed, 95);
+    const scrollOffset = targetScrollY - smoothScrollY;
+    scrollTargets.forEach(function (element) {
+      element.style.setProperty("--page-scroll-offset", scrollOffset.toFixed(2) + "px");
+    });
 
     textElements.forEach(function (element) {
-      element.style.setProperty("--scroll-motion-y", textOffset.toFixed(2) + "px");
+      const section = element.closest(".hero, .about");
+      if (!section) return;
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight || window.innerHeight;
+      const motionStart = Math.max(0, sectionTop - window.innerHeight * 0.5);
+      const textTravel = clamp(smoothScrollY - motionStart, 0, sectionHeight);
+      element.style.setProperty("--scroll-motion-y", (-textTravel * 0.18).toFixed(2) + "px");
     });
 
     // Counter-move the portrait by part of the page's travel. Its frame therefore
     // crosses the viewport more slowly than the text and stays visible longer.
-    const parallaxLimit = Math.min(heroHeight * 0.3, window.innerHeight * 0.32);
-    const parallax = clamp((targetScrollY - heroTop) * 0.3, 0, parallaxLimit);
-    photo.style.setProperty("--scroll-motion-y", (parallax + textOffset * 0.72).toFixed(2) + "px");
+    const parallaxLimit = Math.min(heroHeight * 0.42, window.innerHeight * 0.44);
+    const parallax = clamp((smoothScrollY - heroTop) * 0.42, 0, parallaxLimit);
+    photo.style.setProperty("--scroll-motion-y", parallax.toFixed(2) + "px");
 
-    const stillMoving = Math.abs(scrollVelocity) > 1 ||
-      Math.abs(textOffset - targetTextOffset) > 0.08;
+    const stillMoving = Math.abs(targetScrollY - smoothScrollY) > 0.08 || Math.abs(scrollVelocity) > 0.08;
 
     if (stillMoving) {
       frameId = window.requestAnimationFrame(renderMotion);
     } else {
+      smoothScrollY = targetScrollY;
       scrollVelocity = 0;
-      textOffset = 0;
+      scrollTargets.forEach(function (element) {
+        element.style.setProperty("--page-scroll-offset", "0px");
+      });
       previousFrameTime = 0;
     }
   }
