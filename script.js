@@ -139,7 +139,7 @@ function setupScrollMotion() {
 
     // Critically damped motion keeps the page moving as one continuous surface:
     // no instant stop followed by a separate element animation.
-    const omega = 5;
+    const omega = 3.8;
     const displacement = smoothScrollY - targetScrollY;
     const springStep = (scrollVelocity + omega * displacement) * elapsedSeconds;
     const decay = Math.exp(-omega * elapsedSeconds);
