@@ -109,3 +109,76 @@ if ("IntersectionObserver" in window) {
     item.classList.add("is-visible");
   });
 }
+
+function setupScrollMotion() {
+  const hero = document.querySelector(".hero");
+  const textElements = document.querySelectorAll('[data-scroll-motion="text"]');
+  const photo = document.querySelector('[data-scroll-motion="photo"]');
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (!hero || !photo || !textElements.length || prefersReducedMotion.matches) {
+    return;
+  }
+
+  let targetScrollY = window.scrollY;
+  let easedScrollY = targetScrollY;
+  let heroTop = hero.offsetTop;
+  let heroHeight = hero.offsetHeight || window.innerHeight;
+  let frameId = 0;
+  let previousFrameTime = 0;
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function renderMotion(timestamp) {
+    frameId = 0;
+    const elapsed = previousFrameTime ? Math.min(timestamp - previousFrameTime, 50) : 16.7;
+    previousFrameTime = timestamp;
+
+    const blend = 1 - Math.exp(-elapsed / 115);
+    easedScrollY += (targetScrollY - easedScrollY) * blend;
+    const stillMoving = Math.abs(targetScrollY - easedScrollY) > 0.2;
+    const inertia = stillMoving ? clamp(targetScrollY - easedScrollY, -46, 46) : 0;
+
+    textElements.forEach(function (element) {
+      element.style.setProperty("--scroll-motion-y", (inertia * 0.78).toFixed(2) + "px");
+    });
+
+    const progress = clamp((targetScrollY - heroTop) / heroHeight, 0, 1);
+    const parallax = progress * Math.min(105, window.innerHeight * 0.12);
+    photo.style.setProperty("--scroll-motion-y", (parallax + inertia * 0.66).toFixed(2) + "px");
+
+    if (stillMoving) {
+      frameId = window.requestAnimationFrame(renderMotion);
+    } else {
+      easedScrollY = targetScrollY;
+      previousFrameTime = 0;
+    }
+  }
+
+  function scheduleMotion() {
+    targetScrollY = window.scrollY;
+    if (!frameId) {
+      frameId = window.requestAnimationFrame(renderMotion);
+    }
+  }
+
+  function updateHeroSize() {
+    heroTop = hero.offsetTop;
+    heroHeight = hero.offsetHeight || window.innerHeight;
+    scheduleMotion();
+  }
+
+  window.addEventListener("scroll", scheduleMotion, { passive: true });
+  window.addEventListener("resize", updateHeroSize, { passive: true });
+
+  if ("ResizeObserver" in window) {
+    const heroObserver = new ResizeObserver(updateHeroSize);
+    heroObserver.observe(hero);
+  }
+
+  scheduleMotion();
+}
+
+setupScrollMotion();
