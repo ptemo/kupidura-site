@@ -1,6 +1,6 @@
 # KUPIDURA — pierwsza wersja strony
 
-Ten statyczny szkic zawiera sekcje HOME i ABOUT, jedno zdjęcie hero, które prowadzi do ABOUT, przełącznik jasnego i ciemnego motywu z koncentrycznym przejściem oraz niezależne, płynne wejścia napisów bez odbicia. Zdjęcie delikatnie zmniejsza się do docelowego rozmiaru. Strona działa bez instalowania frameworka ani budowania projektu.
+Ten statyczny szkic zawiera sekcje HOME i ABOUT, jedno zdjęcie hero, które prowadzi do ABOUT, przełącznik jasnego i ciemnego motywu z koncentrycznym przejściem oraz niezależne, płynne wejścia napisów bez odbicia. Zdjęcie delikatnie zmniejsza się do docelowego rozmiaru. Podczas przewijania tekst ma subtelną bezwładność, a zdjęcie porusza się wolniej, z lekkim efektem paralaksy. Strona działa bez instalowania frameworka ani budowania projektu.
 
 ## Podgląd na komputerze
 
