@@ -139,7 +139,7 @@ function setupScrollMotion() {
 
     // Critically damped motion keeps the page moving as one continuous surface:
     // no instant stop followed by a separate element animation.
-    const omega = 7.5;
+    const omega = 5;
     const displacement = smoothScrollY - targetScrollY;
     const springStep = (scrollVelocity + omega * displacement) * elapsedSeconds;
     const decay = Math.exp(-omega * elapsedSeconds);
@@ -158,17 +158,15 @@ function setupScrollMotion() {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight || window.innerHeight;
       const motionStart = Math.max(0, sectionTop - window.innerHeight * 0.5);
-      const textProgress = clamp((smoothScrollY - motionStart) / sectionHeight, 0, 1);
-      const easedProgress = textProgress * textProgress * (3 - 2 * textProgress);
-      const textTravel = easedProgress * sectionHeight;
-      // Keep the type drift restrained and ease it in and out across the section.
-      element.style.setProperty("--scroll-motion-y", (-textTravel * 0.25).toFixed(2) + "px");
+      const textTravel = clamp(smoothScrollY - motionStart, 0, sectionHeight);
+      // Keep the stronger type drift, then let the shared spring carry it out slowly.
+      element.style.setProperty("--scroll-motion-y", (-textTravel * 0.55).toFixed(2) + "px");
     });
 
     // Counter-move the portrait by part of the page's travel. Its frame therefore
     // crosses the viewport more slowly than the text and stays visible longer.
     // Keep the photo at a steady slower rate; a hard cap made its motion hitch.
-    const parallax = Math.max(0, smoothScrollY - heroTop) * 0.42;
+    const parallax = Math.max(0, smoothScrollY - heroTop) * 0.22;
     photo.style.setProperty("--scroll-motion-y", parallax.toFixed(2) + "px");
 
     const stillMoving = Math.abs(targetScrollY - smoothScrollY) > 0.08 || Math.abs(scrollVelocity) > 0.08;
