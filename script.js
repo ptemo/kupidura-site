@@ -1,3 +1,31 @@
+// Zdjecie hero zaczyna animacje dopiero, gdy jest wczytane i zdekodowane,
+// zeby nie "dojezdzalo" jako pusta szara ramka.
+(function revealHeroPhoto() {
+  const figure = document.querySelector(".hero-photo");
+  if (!figure) return;
+  const image = figure.querySelector("img");
+  let done = false;
+
+  function reveal() {
+    if (done) return;
+    done = true;
+    figure.classList.add("is-ready");
+  }
+
+  window.setTimeout(reveal, 3000); // zabezpieczenie przy bardzo wolnym lacu
+
+  if (!image) {
+    reveal();
+  } else if (typeof image.decode === "function") {
+    image.decode().then(reveal, reveal);
+  } else if (image.complete) {
+    reveal();
+  } else {
+    image.addEventListener("load", reveal, { once: true });
+    image.addEventListener("error", reveal, { once: true });
+  }
+})();
+
 const root = document.documentElement;
 const themeButton = document.querySelector(".theme-toggle");
 const themeIcon = document.querySelector(".theme-icon");
@@ -235,14 +263,25 @@ function setupScrollMotion() {
     target = current;
   }, { passive: true });
 
-  // Linki kotwicowe (np. zdjecie hero -> ABOUT) przewijaja plynnie.
+  // Dokad przewinac po kliknieciu linku kotwicowego. HOME to sam gora strony,
+  // a tekst sekcji z paralaksa ustawiamy tak, by byl widoczny, nie "uciekl" w gore.
+  function anchorPosition(destination) {
+    if (destination === hero) return 0;
+    const natural = destination.getBoundingClientRect().top + window.scrollY;
+    const item = textMetrics.find(function (metric) {
+      return destination.contains(metric.element);
+    });
+    return item ? Math.min(natural, item.start + window.innerHeight * 0.1) : natural;
+  }
+
+  // Linki kotwicowe (np. HOME, ABOUT) przewijaja plynnie.
   document.addEventListener("click", function (event) {
     const link = event.target.closest('a[href^="#"]');
     if (!link || link.classList.contains("skip-link") || link.hash.length < 2) return;
     const destination = document.getElementById(decodeURIComponent(link.hash.slice(1)));
     if (!destination) return;
     event.preventDefault();
-    scrollToPosition(destination.getBoundingClientRect().top + window.scrollY);
+    scrollToPosition(anchorPosition(destination));
     try {
       history.replaceState(null, "", link.hash);
     } catch (error) {}
