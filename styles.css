@@ -871,14 +871,13 @@ button {
 
 .press-photo {
   width: min(100%, 220px);
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 2 / 3;
   margin: 36px auto 0;
   overflow: hidden;
   background: var(--tile-bg);
 }
 
-.press-photo img,
-.site-footer-photo img {
+.press-photo img {
   display: block;
   width: 100%;
   height: 100%;
@@ -889,14 +888,6 @@ button {
 .site-footer {
   padding: 0 24px 96px;
   text-align: center;
-}
-
-.site-footer-photo {
-  width: min(100%, 220px);
-  aspect-ratio: 2 / 3;
-  margin: 0 auto;
-  overflow: hidden;
-  background: var(--tile-bg);
 }
 
 .site-footer > h2 {
