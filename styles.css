@@ -459,8 +459,13 @@ button {
   background: var(--tile-bg);
 }
 
-.track[hidden] {
+.track-grid[hidden],
+.load-more[hidden] {
   display: none !important;
+}
+
+.track-grid--extra {
+  margin-top: 42px;
 }
 
 .track::after {
@@ -521,20 +526,18 @@ button {
 
 .track-category {
   display: block;
-  padding: 9px 6px 0;
+  padding: 0 6px 8px;
   color: var(--page-muted);
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.11em;
   line-height: 1.2;
+  text-align: center;
   text-transform: uppercase;
 }
 
-.track-category + .track-title {
-  padding-top: 4px;
-}
-
 .load-more {
+  display: inline-block;
   margin-top: 24px;
   padding: 10px 20px;
   border: 1px solid var(--hairline);
