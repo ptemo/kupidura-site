@@ -267,7 +267,8 @@ function setupScrollMotion() {
   // a tekst sekcji z paralaksa ustawiamy tak, by byl widoczny, nie "uciekl" w gore.
   function anchorPosition(destination) {
     if (destination === hero) return 0;
-    const natural = destination.getBoundingClientRect().top + window.scrollY;
+    const margin = parseFloat(window.getComputedStyle(destination).scrollMarginTop) || 0;
+    const natural = destination.getBoundingClientRect().top + window.scrollY - margin;
     const item = textMetrics.find(function (metric) {
       return destination.contains(metric.element);
     });
@@ -304,3 +305,106 @@ function setupScrollMotion() {
 }
 
 setupScrollMotion();
+
+// ---------------------------------------------------------------------------
+// MUSIC: kafelki z utworami, gramofon, jeden utwor naraz
+// ---------------------------------------------------------------------------
+function setupMusicPlayer() {
+  const trackElements = Array.from(document.querySelectorAll(".track[data-audio]"));
+  if (!trackElements.length) return;
+
+  const vinylMarkup =
+    '<svg viewBox="0 0 64 64" focusable="false">' +
+      '<g class="vinyl-disc">' +
+        '<circle cx="28" cy="36" r="26" fill="#0b0b0b" stroke="#3b3b3b" stroke-width="0.8"/>' +
+        '<circle cx="28" cy="36" r="22" fill="none" stroke="#fff" stroke-opacity="0.1" stroke-width="0.6"/>' +
+        '<circle cx="28" cy="36" r="18" fill="none" stroke="#fff" stroke-opacity="0.1" stroke-width="0.6"/>' +
+        '<circle cx="28" cy="36" r="14" fill="none" stroke="#fff" stroke-opacity="0.1" stroke-width="0.6"/>' +
+        '<path d="M28 10A26 26 0 0 1 46.4 17.6L28 36Z" fill="#fff" fill-opacity="0.08"/>' +
+        '<path d="M28 62A26 26 0 0 1 9.6 54.4L28 36Z" fill="#fff" fill-opacity="0.08"/>' +
+        '<circle cx="28" cy="36" r="8.5" fill="#ececec"/>' +
+        '<circle cx="28" cy="30" r="1.7" fill="#0b0b0b"/>' +
+        '<circle cx="28" cy="36" r="1.5" fill="#0b0b0b"/>' +
+      '</g>' +
+      '<g class="vinyl-arm">' +
+        '<path d="M58 6V44l-3.5 6" fill="none" stroke="#0b0b0b" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M58 6V44l-3.5 6" fill="none" stroke="#f2f2f2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="58" cy="12" r="4.4" fill="#0b0b0b"/>' +
+        '<circle cx="58" cy="12" r="2.1" fill="#f2f2f2"/>' +
+      '</g>' +
+    '</svg>';
+
+  const players = [];
+
+  function pauseAllExcept(current) {
+    players.forEach(function (player) {
+      if (player !== current) player.pause();
+    });
+  }
+
+  trackElements.forEach(function (track) {
+    const button = track.querySelector(".track-main");
+    const titleElement = track.querySelector(".track-title");
+    const vinylSlot = track.querySelector(".vinyl");
+    if (!button || !titleElement) return;
+
+    const title = titleElement.textContent.trim();
+    let audio = null;
+
+    if (vinylSlot) vinylSlot.innerHTML = vinylMarkup;
+
+    function setPlaying(isPlaying) {
+      track.classList.toggle("is-playing", isPlaying);
+      button.setAttribute("aria-label", (isPlaying ? "Pause: " : "Play: ") + title);
+    }
+
+    // Audio tworzymy dopiero po pierwszym kliknieciu, zeby strona nie pobierala
+    // wszystkich plikow MP3 przy wejsciu.
+    function ensureAudio() {
+      if (audio) return audio;
+      audio = new Audio();
+      audio.preload = "auto";
+      audio.src = track.dataset.audio;
+      audio.addEventListener("play", function () {
+        pauseAllExcept(player);   // tez gdy start przyszedl z klawiszy multimedialnych
+        setPlaying(true);
+      });
+      audio.addEventListener("pause", function () { setPlaying(false); });
+      audio.addEventListener("ended", function () {
+        audio.currentTime = 0;
+        setPlaying(false);
+      });
+      audio.addEventListener("error", function () { setPlaying(false); });
+      return audio;
+    }
+
+    const player = {
+      pause: function () {
+        if (audio && !audio.paused) audio.pause();
+      }
+    };
+    players.push(player);
+
+    button.addEventListener("click", function () {
+      const element = ensureAudio();
+      if (element.paused) {
+        pauseAllExcept(player);
+        const attempt = element.play();
+        if (attempt && typeof attempt.catch === "function") {
+          attempt.catch(function () { setPlaying(false); });
+        }
+      } else {
+        element.pause();
+      }
+    });
+  });
+
+  // Linki do serwisow bez adresu (href="#") nie robia nic, dopoki nie wpiszesz URL.
+  document.querySelectorAll('.stream-link[href="#"]').forEach(function (link) {
+    link.addEventListener("click", function (event) {
+      event.preventDefault();
+    });
+  });
+}
+
+setupMusicPlayer();
