@@ -406,4 +406,20 @@ function setupMusicPlayer() {
   });
 }
 
+function setupLoadMore() {
+  const button = document.querySelector(".load-more");
+  const extraTracks = Array.from(document.querySelectorAll(".track--extra"));
+  if (!button || !extraTracks.length) return;
+
+  button.addEventListener("click", function () {
+    const isExpanded = button.getAttribute("aria-expanded") === "true";
+    extraTracks.forEach(function (track) {
+      track.hidden = isExpanded;
+    });
+    button.setAttribute("aria-expanded", String(!isExpanded));
+    button.textContent = isExpanded ? "LOAD MORE" : "SHOW LESS";
+  });
+}
+
+setupLoadMore();
 setupMusicPlayer();

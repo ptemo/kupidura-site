@@ -459,6 +459,10 @@ button {
   background: var(--tile-bg);
 }
 
+.track[hidden] {
+  display: none !important;
+}
+
 .track::after {
   position: absolute;
   inset: 0;
@@ -513,6 +517,46 @@ button {
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.3;
+}
+
+.track-category {
+  display: block;
+  padding: 9px 6px 0;
+  color: var(--page-muted);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.track-category + .track-title {
+  padding-top: 4px;
+}
+
+.load-more {
+  margin-top: 24px;
+  padding: 10px 20px;
+  border: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--page-ink);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease;
+}
+
+.load-more:hover,
+.load-more:focus-visible {
+  border-color: var(--page-ink);
+  background: var(--page-ink);
+  color: var(--page-bg);
+}
+
+.load-more:focus-visible {
+  outline: 2px solid var(--page-ink);
+  outline-offset: 3px;
 }
 
 .track-links {
