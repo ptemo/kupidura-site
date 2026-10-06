@@ -112,7 +112,7 @@ if ("IntersectionObserver" in window) {
 
 function setupScrollMotion() {
   const hero = document.querySelector(".hero");
-  const textElements = document.querySelectorAll('[data-scroll-motion="text"]');
+  const textElements = Array.from(document.querySelectorAll('[data-scroll-motion="text"]'));
   const photo = document.querySelector('[data-scroll-motion="photo"]');
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -120,85 +120,148 @@ function setupScrollMotion() {
     return;
   }
 
-  let targetScrollY = window.scrollY;
-  let smoothTextScrollY = targetScrollY;
-  let smoothPhotoScrollY = targetScrollY;
-  let heroTop = hero.offsetTop;
+  // --- Ustawienia do dostrojenia -------------------------------------------
+  const followTime = 0.16;       // sekundy; wieksza wartosc = bardziej "bezwladne" przewijanie
+  const wheelSpeed = 0.55;       // mnoznik kroku kolka myszy (1 = tak jak w przegladarce)
+  const maxWheelStep = 90;       // maksymalny krok na jedno zdarzenie kolka, w px
+  const textTravelRate = 0.55;   // dodatkowy ruch tekstu wzgledem przewijania
+  const photoCounterMotion = 0.30; // o tyle zdjecie jedzie wolniej (paralaksa)
+  // -------------------------------------------------------------------------
+
+  let current = window.scrollY;  // pozycja faktycznie ustawiana na stronie
+  let target = current;          // pozycja, do ktorej dazymy
   let frameId = 0;
-  let previousFrameTime = 0;
-  const textFollowTime = 0.28;
-  const photoFollowTime = 0.16;
-  const textTravelRate = 0.55;
-  const photoCounterMotion = 0.30;
+  let previousTime = 0;
+  let renderQueued = false;
+  let heroTop = 0;
+  let textMetrics = [];
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
   }
 
-  function renderMotion(timestamp) {
-    frameId = 0;
-    const elapsedSeconds = previousFrameTime
-      ? clamp((timestamp - previousFrameTime) / 1000, 0, 0.05)
-      : 1 / 60;
-    previousFrameTime = timestamp;
-
-    // Follow the browser's real scroll position with a one-way low-pass filter.
-    // Unlike the old spring, this carries no stored velocity into a direction change.
-    const textBlend = 1 - Math.exp(-elapsedSeconds / textFollowTime);
-    const photoBlend = 1 - Math.exp(-elapsedSeconds / photoFollowTime);
-    smoothTextScrollY += (targetScrollY - smoothTextScrollY) * textBlend;
-    smoothPhotoScrollY += (targetScrollY - smoothPhotoScrollY) * photoBlend;
-
-    const textScrollLag = targetScrollY - smoothTextScrollY;
-
-    textElements.forEach(function (element) {
-      const section = element.closest(".hero, .about");
-      if (!section) return;
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight || window.innerHeight;
-      const motionStart = Math.max(0, sectionTop - window.innerHeight * 0.5);
-      const textTravel = clamp(smoothTextScrollY - motionStart, 0, sectionHeight);
-      const translateY = textScrollLag - textTravel * textTravelRate;
-      element.style.setProperty("--scroll-motion-y", translateY.toFixed(2) + "px");
-    });
-
-    const photoScrollLag = targetScrollY - smoothPhotoScrollY;
-    const parallax = Math.max(0, smoothPhotoScrollY - heroTop) * photoCounterMotion;
-    photo.style.setProperty("--scroll-motion-y", (photoScrollLag + parallax).toFixed(2) + "px");
-
-    const stillMoving = Math.abs(targetScrollY - smoothTextScrollY) > 0.12
-      || Math.abs(targetScrollY - smoothPhotoScrollY) > 0.12;
-
-    if (stillMoving) {
-      frameId = window.requestAnimationFrame(renderMotion);
-    } else {
-      smoothTextScrollY = targetScrollY;
-      smoothPhotoScrollY = targetScrollY;
-      previousFrameTime = 0;
-    }
+  function maxScroll() {
+    return Math.max(0, root.scrollHeight - root.clientHeight);
   }
 
-  function scheduleMotion() {
-    targetScrollY = window.scrollY;
-    if (!frameId) {
-      frameId = window.requestAnimationFrame(renderMotion);
-    }
-  }
-
-  function updateHeroSize() {
+  function measure() {
     heroTop = hero.offsetTop;
-    scheduleMotion();
+    textMetrics = textElements.map(function (element) {
+      const section = element.closest(".hero, .about");
+      if (!section) return null;
+      return {
+        element: element,
+        start: Math.max(0, section.offsetTop - window.innerHeight * 0.5),
+        height: section.offsetHeight || window.innerHeight
+      };
+    }).filter(Boolean);
   }
 
-  window.addEventListener("scroll", scheduleMotion, { passive: true });
-  window.addEventListener("resize", updateHeroSize, { passive: true });
+  // Paralaksa jest czysta funkcja pozycji przewijania. Nie ma tu zadnego
+  // "doganiania" ani kompensacji, wiec nie ma czego cofac.
+  function renderMotion(y) {
+    textMetrics.forEach(function (item) {
+      const travel = clamp(y - item.start, 0, item.height);
+      item.element.style.setProperty("--scroll-motion-y", (-travel * textTravelRate).toFixed(2) + "px");
+    });
+    const parallax = Math.max(0, y - heroTop) * photoCounterMotion;
+    photo.style.setProperty("--scroll-motion-y", parallax.toFixed(2) + "px");
+  }
+
+  function requestRender() {
+    if (renderQueued || frameId) return;
+    renderQueued = true;
+    window.requestAnimationFrame(function () {
+      renderQueued = false;
+      renderMotion(window.scrollY);
+    });
+  }
+
+  // Jedna petla: wygladza pozycje przewijania, ustawia ja na stronie
+  // i w tej samej klatce przelicza paralaksę z faktycznej pozycji.
+  function tick(timestamp) {
+    const elapsed = previousTime ? clamp((timestamp - previousTime) / 1000, 0, 0.05) : 1 / 60;
+    previousTime = timestamp;
+
+    current += (target - current) * (1 - Math.exp(-elapsed / followTime));
+    if (Math.abs(target - current) < 0.2) current = target;
+
+    window.scrollTo(0, current);
+    renderMotion(window.scrollY);
+
+    if (current !== target) {
+      frameId = window.requestAnimationFrame(tick);
+    } else {
+      frameId = 0;
+      previousTime = 0;
+    }
+  }
+
+  function startLoop() {
+    if (!frameId) {
+      previousTime = 0;
+      frameId = window.requestAnimationFrame(tick);
+    }
+  }
+
+  function scrollToPosition(y) {
+    if (!frameId) current = window.scrollY;
+    target = clamp(y, 0, maxScroll());
+    startLoop();
+  }
+
+  window.addEventListener("wheel", function (event) {
+    if (event.ctrlKey || event.defaultPrevented) return;          // zoom gestem / Ctrl+kolko
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;  // przewijanie poziome
+    let delta = event.deltaY;
+    if (event.deltaMode === 1) delta *= 16;
+    else if (event.deltaMode === 2) delta *= window.innerHeight;
+    delta = clamp(delta * wheelSpeed, -maxWheelStep, maxWheelStep);
+    event.preventDefault();
+    if (!frameId) current = target = window.scrollY;
+    scrollToPosition(target + delta);
+  }, { passive: false });
+
+  // Przewijanie spoza naszej petli (dotyk, klawiatura, pasek przewijania):
+  // przejmujemy pozycje przegladarki, zeby niczego nie "dociagac" w tle.
+  window.addEventListener("scroll", function () {
+    const y = window.scrollY;
+    if (frameId && Math.abs(y - current) <= 2) return;
+    current = target = y;
+    requestRender();
+  }, { passive: true });
+
+  window.addEventListener("touchstart", function () {
+    target = current;
+  }, { passive: true });
+
+  // Linki kotwicowe (np. zdjecie hero -> ABOUT) przewijaja plynnie.
+  document.addEventListener("click", function (event) {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link || link.classList.contains("skip-link") || link.hash.length < 2) return;
+    const destination = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (!destination) return;
+    event.preventDefault();
+    scrollToPosition(destination.getBoundingClientRect().top + window.scrollY);
+    try {
+      history.replaceState(null, "", link.hash);
+    } catch (error) {}
+  });
+
+  function handleResize() {
+    measure();
+    target = clamp(target, 0, maxScroll());
+    requestRender();
+  }
+
+  window.addEventListener("resize", handleResize, { passive: true });
 
   if ("ResizeObserver" in window) {
-    const heroObserver = new ResizeObserver(updateHeroSize);
-    heroObserver.observe(hero);
+    new ResizeObserver(handleResize).observe(document.body);
   }
 
-  scheduleMotion();
+  measure();
+  renderMotion(window.scrollY);
 }
 
 setupScrollMotion();
