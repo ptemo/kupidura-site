@@ -29,8 +29,6 @@
 const root = document.documentElement;
 const themeButton = document.querySelector(".theme-toggle");
 const themeIcon = document.querySelector(".theme-icon");
-const readMoreButton = document.querySelector(".read-more");
-const aboutExtra = document.querySelector("#about-extra");
 const announcement = document.querySelector(".announcement");
 
 const sunIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.7"></circle><path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56m11.02 11.02 1.56 1.56M2 12h2.2m15.6 0H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path></svg>';
@@ -39,8 +37,8 @@ const moonIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true
 function setTheme(theme) {
   root.dataset.theme = theme;
   const nextTheme = theme === "dark" ? "light" : "dark";
-  themeButton.setAttribute("aria-label", "Switch to " + nextTheme + " mode");
-  themeIcon.innerHTML = theme === "dark" ? sunIcon : moonIcon;
+  if (themeButton) themeButton.setAttribute("aria-label", "Switch to " + nextTheme + " mode");
+  if (themeIcon) themeIcon.innerHTML = theme === "dark" ? sunIcon : moonIcon;
 
   try {
     localStorage.setItem("kupidura-theme", theme);
@@ -94,15 +92,16 @@ function switchTheme(theme) {
 
 setTheme(root.dataset.theme === "light" ? "light" : "dark");
 
-themeButton.addEventListener("click", function () {
-  switchTheme(root.dataset.theme === "dark" ? "light" : "dark");
-});
+if (themeButton) {
+  themeButton.addEventListener("click", function () {
+    switchTheme(root.dataset.theme === "dark" ? "light" : "dark");
+  });
+}
 
-readMoreButton.addEventListener("click", function () {
-  const expanded = readMoreButton.getAttribute("aria-expanded") === "true";
-  readMoreButton.setAttribute("aria-expanded", String(!expanded));
-  aboutExtra.hidden = expanded;
-  readMoreButton.textContent = expanded ? "READ MORE" : "READ LESS";
+document.querySelectorAll("[data-inert-link]").forEach(function (link) {
+  link.addEventListener("click", function (event) {
+    event.preventDefault();
+  });
 });
 
 let announcementTimer;
