@@ -130,6 +130,7 @@ button {
 .hero {
   min-height: calc(100svh - 37px);
   padding: 0 24px 42px;
+  overflow-x: clip;
   text-align: center;
 }
 
@@ -337,11 +338,11 @@ html.js [data-reveal].is-visible {
 }
 
 .js .hero-role {
-  animation: enter-from-left 1150ms 210ms var(--ease-out) both;
+  animation: text-rise 1100ms 260ms var(--ease-out) both;
 }
 
 .js .hero-location {
-  animation: enter-from-right 1200ms 300ms var(--ease-out) both;
+  animation: text-rise 1100ms 380ms var(--ease-out) both;
 }
 
 .js .theme-toggle {
@@ -349,23 +350,41 @@ html.js [data-reveal].is-visible {
 }
 
 .js .hero-photo {
-  animation: portrait-settle 1450ms 140ms var(--ease-out) both;
+  animation: portrait-settle 1700ms 140ms var(--ease-out) both;
   transform-origin: center center;
 }
+
+.js .main-nav > * {
+  animation: nav-enter 900ms var(--ease-out) backwards;
+  animation-delay: calc(60ms + var(--nav-i, 0) * 80ms);
+}
+
+.js .main-nav > :nth-child(1) { --nav-i: 0; }
+.js .main-nav > :nth-child(2) { --nav-i: 1; }
+.js .main-nav > :nth-child(3) { --nav-i: 2; }
+.js .main-nav > :nth-child(4) { --nav-i: 3; }
+.js .main-nav > :nth-child(5) { --nav-i: 4; }
+.js .main-nav > :nth-child(6) { --nav-i: 5; }
+.js .main-nav > :nth-child(7) { --nav-i: 6; }
+.js .main-nav > :nth-child(8) { --nav-i: 7; }
+.js .main-nav > :nth-child(9) { --nav-i: 8; }
+.js .main-nav > :nth-child(10) { --nav-i: 9; }
+.js .main-nav > :nth-child(11) { --nav-i: 10; }
+.js .main-nav > :nth-child(12) { --nav-i: 11; }
 
 @keyframes enter-from-above {
   from { opacity: 0; transform: translate3d(0, -14px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
-@keyframes enter-from-left {
-  from { opacity: 0; transform: translate3d(-11px, 0, 0); }
+@keyframes text-rise {
+  from { opacity: 0; transform: translate3d(0, 20px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
-@keyframes enter-from-right {
-  from { opacity: 0; transform: translate3d(11px, 0, 0); }
-  to { opacity: 1; transform: translate3d(0, 0, 0); }
+/* Tylko "from": koncowy stan to zwykle style linku (hover, opacity), bez skoku. */
+@keyframes nav-enter {
+  from { opacity: 0; transform: translate3d(0, -14px, 0); }
 }
 
 @keyframes enter-from-below {
@@ -374,7 +393,7 @@ html.js [data-reveal].is-visible {
 }
 
 @keyframes portrait-settle {
-  from { opacity: 0.72; transform: scale(1.11); }
+  from { opacity: 0; transform: scale(1.2); }
   to { opacity: 1; transform: scale(1); }
 }
 
@@ -463,6 +482,7 @@ html.js [data-reveal].is-visible {
   *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
