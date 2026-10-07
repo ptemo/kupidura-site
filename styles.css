@@ -142,7 +142,7 @@ button {
 }
 
 .hero {
-  min-height: calc(100svh - 37px);
+  min-height: calc(100svh - 64px);
   padding: 0 24px 42px;
   overflow-x: clip;
   text-align: center;
@@ -245,7 +245,7 @@ button {
 }
 
 .about {
-  padding: 0 24px clamp(86px, 13vh, 136px);
+  padding: 0 24px clamp(60px, 8vh, 90px);
   text-align: center;
 }
 
@@ -432,7 +432,7 @@ button {
 }
 
 .music {
-  padding: 0 24px clamp(96px, 14vh, 150px);
+  padding: 0 24px clamp(60px, 8vh, 90px);
   text-align: center;
 }
 
@@ -725,7 +725,7 @@ button {
 
 @media (max-width: 560px) {
   .music {
-    padding: 0 18px 96px;
+    padding: 0 18px 64px;
   }
 
   .music-copy h2 {
@@ -744,12 +744,12 @@ button {
 }
 
 .live-section {
-  padding: 0 24px clamp(150px, 20vh, 210px);
+  padding: 0 24px clamp(90px, 12vh, 130px);
   text-align: center;
 }
 
 .press-section {
-  padding: 0 24px clamp(78px, 11vh, 118px);
+  padding: 0 24px clamp(56px, 7vh, 76px);
   text-align: center;
 }
 
@@ -893,7 +893,7 @@ button {
 }
 
 .site-footer > h2 {
-  margin: 32px 0 0;
+  margin: 18px 0 0;
   color: var(--page-ink);
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 34px;
@@ -1113,7 +1113,7 @@ html.js [data-reveal].is-visible {
   }
 
   .hero {
-    min-height: calc(100svh - 38px);
+    min-height: calc(100svh - 52px);
     padding: 0 18px 40px;
   }
 
@@ -1145,7 +1145,7 @@ html.js [data-reveal].is-visible {
   }
 
   .about {
-    padding: 0 20px 94px;
+    padding: 0 20px 68px;
   }
 
   .about-copy {
