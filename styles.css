@@ -706,8 +706,7 @@ button {
     opacity: 1;
   }
 
-  .track:hover .track-cover img,
-  .track.is-playing .track-cover img {
+  .track:hover .track-cover img {
     filter: grayscale(0);
   }
 }
