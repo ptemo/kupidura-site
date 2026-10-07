@@ -929,6 +929,15 @@ button {
   gap: 12px;
 }
 
+.footer-copyright {
+  margin: 34px 0 0;
+  color: var(--page-muted);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
 @media (max-width: 700px) {
   .live-section {
     padding-right: 18px;
