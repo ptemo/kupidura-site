@@ -930,12 +930,13 @@ button {
 }
 
 .footer-copyright {
-  margin: 34px 0 0;
+  margin: 48px 0 0;
   color: var(--page-muted);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 400;
   letter-spacing: 0.04em;
   line-height: 1.4;
+  opacity: 0.58;
 }
 
 @media (max-width: 700px) {
