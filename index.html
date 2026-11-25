@@ -19,6 +19,7 @@
       } catch (error) {}
     </script>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="press.css">
     <script src="script.js" defer></script>
   </head>
   <body>
@@ -242,21 +243,43 @@
             Press materials, selected photographs and downloadable resources for media, venues and collaborators.
           </p>
           <div class="press-actions" data-reveal>
-            <a class="press-action" href="#" aria-disabled="true" data-inert-link>DOWNLOAD FULL PRESS KIT</a>
-            <a class="press-action" href="#" aria-disabled="true" data-inert-link>PRESS PHOTOS</a>
-            <a class="press-action" href="#" aria-disabled="true" data-inert-link>ARTIST BIO</a>
-            <a class="press-action" href="#" aria-disabled="true" data-inert-link>BOOKING INFO</a>
+            <a class="press-action" href="press-kit/kupidura-press-kit.zip" download>DOWNLOAD FULL PRESS KIT</a>
+            <a class="press-action" href="press-kit/kupidura-press-photos.zip" download>DOWNLOAD PRESS PHOTOS</a>
+            <a class="press-action" href="press-kit/kupidura-artist-bio.txt" download>DOWNLOAD ARTIST BIO</a>
+            <a class="press-action" href="mailto:contact@kupidura.music">BOOKING ENQUIRIES</a>
           </div>
-          <figure class="press-photo" data-reveal>
-            <img
-              src="assets/press/kupidura-press-end-2026-10-06-1001.png"
-              alt="Kupidura at the piano"
-              width="1024"
-              height="1536"
-              loading="lazy"
-              decoding="async"
-            >
-          </figure>
+          <div class="press-gallery" aria-label="Press photographs">
+            <figure class="press-card" data-reveal>
+              <a class="press-card-image" href="assets/press/kupidura-standing-at-piano.jpg" download aria-label="Download photograph: Kupidura standing beside the piano">
+                <img src="assets/press/kupidura-standing-at-piano.jpg" alt="Kupidura standing beside a grand piano" width="1365" height="2048" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Standing beside the piano</figcaption>
+            </figure>
+            <figure class="press-card" data-reveal>
+              <a class="press-card-image" href="assets/press/kupidura-secondary.png" download aria-label="Download photograph: Kupidura at the piano">
+                <img src="assets/press/kupidura-secondary.png" alt="Kupidura playing the piano, seen from the side" width="1024" height="1536" loading="lazy" decoding="async">
+              </a>
+              <figcaption>At the piano</figcaption>
+            </figure>
+            <figure class="press-card" data-reveal>
+              <a class="press-card-image" href="assets/press/kupidura-playing-piano.jpg" download aria-label="Download sepia photograph: Kupidura playing the piano">
+                <img src="assets/press/kupidura-playing-piano.jpg" alt="Sepia portrait of Kupidura playing the piano" width="2048" height="1365" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Playing the piano</figcaption>
+            </figure>
+            <figure class="press-card" data-reveal>
+              <a class="press-card-image" href="assets/press/kupidura-stage-cropped.png" download aria-label="Download photograph: Kupidura in a dramatic concert setting">
+                <img src="assets/press/kupidura-stage-cropped.png" alt="Kupidura beside a piano in a dramatic, warmly lit setting" width="1397" height="1126" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Concert portrait</figcaption>
+            </figure>
+            <figure class="press-card" data-reveal>
+              <a class="press-card-image" href="assets/press/kupidura-hero-press.jpg" download aria-label="Download black and white photograph: Kupidura at the piano">
+                <img src="assets/press/kupidura-hero-press.jpg" alt="Black and white close portrait of Kupidura at the piano" width="1388" height="2048" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Portrait at the piano</figcaption>
+            </figure>
+          </div>
         </div>
       </section>
 
