@@ -419,3 +419,88 @@ function setupLoadMore() {
 
 setupLoadMore();
 setupMusicPlayer();
+
+// LIVE – wczytywanie koncertów z pliku JSON
+async function loadConcerts() {
+  const list = document.querySelector(".event-list");
+  if (!list) return;
+
+  try {
+    const response = await fetch("concerts.json", {
+      cache: "no-cache"
+    });
+
+    if (!response.ok) throw new Error("Cannot load concerts");
+    const concerts = await response.json();
+
+    const fragment = document.createDocumentFragment();
+
+    concerts.forEach(concert => {
+      const date = new Date(concert.date + "T00:00:00Z");
+
+      const formattedDate = date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        timeZone: "UTC"
+      });
+
+      const article = document.createElement("article");
+      article.className = "live-event";
+      article.setAttribute("data-reveal", "");
+
+      article.innerHTML = `
+        <div class="event-description">
+          <h3></h3>
+          <p></p>
+        </div>
+        <div class="event-schedule">
+          <time></time>
+          <span></span>
+        </div>
+        <a class="event-more">MORE INFO</a>
+      `;
+
+      article.querySelector("h3").textContent = concert.title;
+      article.querySelector("p").textContent = concert.venue;
+      article.querySelector("time").textContent = formattedDate;
+      article.querySelector("time").dateTime =
+        concert.date + "T" + concert.time;
+      article.querySelector("span").textContent = concert.time;
+
+      const link = concert.link || "#contact";
+      const url = new URL(link, document.baseURI);
+      article.querySelector("a").href =
+        ["http:", "https:"].includes(url.protocol)
+          ? link : "#contact";
+
+      fragment.appendChild(article);
+    });
+
+    list.replaceChildren(fragment);
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.16 });
+
+      list.querySelectorAll("[data-reveal]").forEach(item => {
+        observer.observe(item);
+      });
+    } else {
+      list.querySelectorAll("[data-reveal]").forEach(item => {
+        item.classList.add("is-visible");
+      });
+    }
+
+  } catch (error) {
+    console.error("Error loading concerts:", error);
+  }
+}
+
+loadConcerts();
