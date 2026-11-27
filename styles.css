@@ -1242,3 +1242,15 @@ html.js [data-reveal].is-visible {
     animation: none !important;
   }
 }
+
+
+/* Language switch */
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.language-switch .nav-link[aria-current="page"] {
+  opacity: 0.58;
+}
