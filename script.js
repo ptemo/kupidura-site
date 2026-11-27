@@ -28,6 +28,7 @@
 
 const root = document.documentElement;
 const isPolish = root.lang === "pl";
+const isFrench = root.lang === "fr";
 const themeButton = document.querySelector(".theme-toggle");
 const themeIcon = document.querySelector(".theme-icon");
 const announcement = document.querySelector(".announcement");
@@ -41,7 +42,9 @@ function setTheme(theme) {
   if (themeButton) {
     const label = isPolish
       ? (theme === "dark" ? "Włącz jasny motyw" : "Włącz ciemny motyw")
-      : "Switch to " + nextTheme + " mode";
+      : isFrench
+        ? (theme === "dark" ? "Passer au thème clair" : "Passer au thème sombre")
+        : "Switch to " + nextTheme + " mode";
     themeButton.setAttribute("aria-label", label);
   }
   if (themeIcon) themeIcon.innerHTML = theme === "dark" ? sunIcon : moonIcon;
@@ -114,7 +117,7 @@ let announcementTimer;
 document.querySelectorAll("[data-coming-soon]").forEach(function (link) {
   link.addEventListener("click", function (event) {
     event.preventDefault();
-    announcement.textContent = link.dataset.comingSoon + (isPolish ? " — ta sekcja pojawi się wkrótce." : " — this section will be added next.");
+    announcement.textContent = link.dataset.comingSoon + (isPolish ? " — ta sekcja pojawi się wkrótce." : isFrench ? " — cette rubrique sera bientôt disponible." : " — this section will be added next.");
     announcement.hidden = false;
     window.clearTimeout(announcementTimer);
     announcementTimer = window.setTimeout(function () {
@@ -360,7 +363,7 @@ function setupMusicPlayer() {
 
     function setPlaying(isPlaying) {
       track.classList.toggle("is-playing", isPlaying);
-      button.setAttribute("aria-label", (isPlaying ? (isPolish ? "Wstrzymaj: " : "Pause: ") : (isPolish ? "Odtwórz: " : "Play: ")) + title);
+      button.setAttribute("aria-label", (isPlaying ? (isPolish ? "Wstrzymaj: " : isFrench ? "Mettre en pause : " : "Pause: ") : (isPolish ? "Odtwórz: " : isFrench ? "Lire : " : "Play: ")) + title);
     }
 
     // Audio tworzymy dopiero po pierwszym kliknieciu, zeby strona nie pobierala
@@ -445,7 +448,7 @@ async function loadConcerts() {
     concerts.forEach(concert => {
       const date = new Date(concert.date + "T00:00:00Z");
 
-      const formattedDate = date.toLocaleDateString(isPolish ? "pl-PL" : "en-GB", {
+      const formattedDate = date.toLocaleDateString(isPolish ? "pl-PL" : isFrench ? "fr-FR" : "en-GB", {
         day: "numeric",
         month: "short",
         year: "numeric",
@@ -465,18 +468,24 @@ async function loadConcerts() {
           <time></time>
           <span></span>
         </div>
-        <a class="event-more">${isPolish ? "WIĘCEJ INFORMACJI" : "MORE INFO"}</a>
+        <a class="event-more">${isPolish ? "WIĘCEJ INFORMACJI" : isFrench ? "PLUS D’INFORMATIONS" : "MORE INFO"}</a>
       `;
 
       const localizedTitle = isPolish
         ? concert.title
             .replace(" - album release", " — premiera albumu")
             .replace(" - album promo", " — koncert promujący album")
-        : concert.title;
+        : isFrench
+          ? concert.title
+              .replace(" - album release", " — sortie d’album")
+              .replace(" - album promo", " — concert de présentation de l’album")
+          : concert.title;
       article.querySelector("h3").textContent = localizedTitle;
       article.querySelector("p").textContent = isPolish
         ? concert.venue.replace("Warsaw, PL", "Warszawa, Polska")
-        : concert.venue;
+        : isFrench
+          ? concert.venue.replace("Warsaw, PL", "Varsovie, Pologne")
+          : concert.venue;
       article.querySelector("time").textContent = formattedDate;
       article.querySelector("time").dateTime =
         concert.date + "T" + concert.time;

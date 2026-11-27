@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="fr" data-theme="dark" data-site-root="../">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090909">
+    <meta name="description" content="Kupidura — compositeur et pianiste basé à Varsovie. Musique pour piano, concerts et dossier de presse.">
+    <title>KUPIDURA — Compositeur et pianiste</title>
+
+    <link rel="alternate" hreflang="en" href="https://kupidura.music/">
+    <link rel="alternate" hreflang="pl" href="https://kupidura.music/pl/">
+    <link rel="alternate" hreflang="fr" href="https://kupidura.music/fr/">
+    <link rel="alternate" hreflang="x-default" href="https://kupidura.music/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      document.documentElement.classList.add("js");
+      try {
+        var savedTheme = localStorage.getItem("kupidura-theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+          document.documentElement.dataset.theme = savedTheme;
+        }
+      } catch (error) {}
+    </script>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+
+    <header class="site-header">
+      <nav class="main-nav" aria-label="Navigation principale">
+        <a class="nav-link" href="#home" aria-current="page">ACCUEIL</a>
+        <a class="nav-link" href="about.html">À PROPOS</a>
+        <a class="nav-link" href="#music">MUSIQUE</a>
+        <a class="nav-link" href="#live">CONCERTS</a>
+        <a class="nav-link" href="#press">PRESSE</a>
+        <a class="nav-link" href="#contact">CONTACT</a>
+
+        <div class="language-switch" role="group" aria-label="Langue">
+          <a class="nav-link" href="../" hreflang="en" lang="en" aria-label="Version anglaise">EN</a>
+          <a class="nav-link" href="../pl/" hreflang="pl" lang="pl" aria-label="Version polonaise">PL</a>
+          <span class="nav-link" lang="fr" aria-current="page">FR</span>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <div class="hero-copy" data-scroll-motion="text">
+          <h1 class="hero-wordmark" id="hero-title">
+            <img src="../assets/kupidura-logo.svg" alt="Przemysław Kupidura" width="1991" height="471">
+          </h1>
+          <p class="hero-role">Compositeur et pianiste</p>
+          <p class="hero-location">VARSOVIE, POLOGNE</p>
+        </div>
+
+        <button class="theme-toggle" type="button" aria-label="Passer au thème clair" data-scroll-motion="text">
+          <span class="theme-icon" aria-hidden="true"></span>
+        </button>
+
+        <figure class="hero-photo" data-scroll-motion="photo">
+          <img
+            src="../assets/kupidura-hero.jpg"
+            alt="Przemysław Kupidura jouant du piano"
+            width="2711"
+            height="4000"
+            fetchpriority="high"
+          >
+        </figure>
+      </section>
+
+      <section class="about" id="about" aria-labelledby="about-title">
+        <div class="about-copy" data-reveal data-scroll-motion="text">
+          <h2 id="about-title">À PROPOS</h2>
+          <p class="about-summary">
+            KUPIDURA est un compositeur et pianiste minimaliste. Sa musique s'articule autour de l'intimité, de la répétition et de l'atmosphère, à la croisée de la musique classique contemporaine et du son cinématographique. Chaque pièce se déploie comme une courte scène inachevée.
+          </p>
+          <a class="read-more" href="about.html">EN SAVOIR PLUS</a>
+        </div>
+      </section>
+
+      <section class="music" id="music" aria-labelledby="music-title">
+        <div class="music-copy" data-reveal>
+          <h2 id="music-title">MUSIQUE</h2>
+          <ul class="track-grid" id="music-track-grid">
+          <li class="track" data-audio="../assets/music/aout.mp3">
+            <button class="track-main" type="button" aria-label="Lire : Août">
+              <span class="track-cover">
+                <img src="../assets/music/covers/aout.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                <span class="vinyl" aria-hidden="true"></span>
+              </span>
+              <span class="track-title">Août</span>
+            </button>
+            <div class="track-links">
+              <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="Août sur Spotify" title="Spotify"></a>
+              <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Août sur Apple Music" title="Apple Music"></a>
+              <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="Août sur TIDAL" title="TIDAL"></a>
+              <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Août sur YouTube Music" title="YouTube Music"></a>
+            </div>
+          </li>
+          <li class="track" data-audio="../assets/music/nouvel-eveil.mp3">
+            <button class="track-main" type="button" aria-label="Lire : Nouvel éveil">
+              <span class="track-cover">
+                <img src="../assets/music/covers/nouvel-eveil.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                <span class="vinyl" aria-hidden="true"></span>
+              </span>
+              <span class="track-title">Nouvel éveil</span>
+            </button>
+            <div class="track-links">
+              <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="Nouvel éveil sur Spotify" title="Spotify"></a>
+              <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Nouvel éveil sur Apple Music" title="Apple Music"></a>
+              <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="Nouvel éveil sur TIDAL" title="TIDAL"></a>
+              <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Nouvel éveil sur YouTube Music" title="YouTube Music"></a>
+            </div>
+          </li>
+          <li class="track" data-audio="../assets/music/entrelace.mp3">
+            <button class="track-main" type="button" aria-label="Lire : Entrelacé">
+              <span class="track-cover">
+                <img src="../assets/music/covers/entrelace.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                <span class="vinyl" aria-hidden="true"></span>
+              </span>
+              <span class="track-title">Entrelacé</span>
+            </button>
+            <div class="track-links">
+              <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="Entrelacé sur Spotify" title="Spotify"></a>
+              <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Entrelacé sur Apple Music" title="Apple Music"></a>
+              <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="Entrelacé sur TIDAL" title="TIDAL"></a>
+              <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Entrelacé sur YouTube Music" title="YouTube Music"></a>
+            </div>
+          </li>
+          <li class="track" data-audio="../assets/music/avril.mp3">
+            <button class="track-main" type="button" aria-label="Lire : Avril">
+              <span class="track-cover">
+                <img src="../assets/music/covers/avril.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                <span class="vinyl" aria-hidden="true"></span>
+              </span>
+              <span class="track-title">Avril</span>
+            </button>
+            <div class="track-links">
+              <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="Avril sur Spotify" title="Spotify"></a>
+              <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Avril sur Apple Music" title="Apple Music"></a>
+              <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="Avril sur TIDAL" title="TIDAL"></a>
+              <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Avril sur YouTube Music" title="YouTube Music"></a>
+            </div>
+          </li>
+          <li class="track" data-audio="../assets/music/on-a-long-day.mp3">
+            <button class="track-main" type="button" aria-label="Lire : On a Long Day">
+              <span class="track-cover">
+                <img src="../assets/music/covers/on-a-long-day.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                <span class="vinyl" aria-hidden="true"></span>
+              </span>
+              <span class="track-title">On a Long Day</span>
+            </button>
+            <div class="track-links">
+              <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="On a Long Day sur Spotify" title="Spotify"></a>
+              <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="On a Long Day sur Apple Music" title="Apple Music"></a>
+              <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="On a Long Day sur TIDAL" title="TIDAL"></a>
+              <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="On a Long Day sur YouTube Music" title="YouTube Music"></a>
+            </div>
+          </li>
+          <li class="track" data-audio="../assets/music/reminiscence.mp3">
+            <button class="track-main" type="button" aria-label="Lire : Réminiscence">
+              <span class="track-cover">
+                <img src="../assets/music/covers/reminiscence.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                <span class="vinyl" aria-hidden="true"></span>
+              </span>
+              <span class="track-title">Réminiscence</span>
+            </button>
+            <div class="track-links">
+              <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="Réminiscence sur Spotify" title="Spotify"></a>
+              <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Réminiscence sur Apple Music" title="Apple Music"></a>
+              <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="Réminiscence sur TIDAL" title="TIDAL"></a>
+              <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Réminiscence sur YouTube Music" title="YouTube Music"></a>
+            </div>
+          </li>
+          </ul>
+          <button class="load-more" type="button" aria-controls="more-tracks">AFFICHER PLUS</button>
+          <ul class="track-grid track-grid--extra" id="more-tracks" hidden>
+          <li class="track-item">
+            <span class="track-category">Ambient</span>
+            <div class="track" data-audio="../assets/music/infra-structura-9.mp3">
+              <button class="track-main" type="button" aria-label="Lire : infra structura #9">
+                <span class="track-cover">
+                  <img src="../assets/music/covers/infra-structura-9.jpg" alt="" width="800" height="800" loading="lazy" decoding="async">
+                  <span class="vinyl" aria-hidden="true"></span>
+                </span>
+                <span class="track-title">infra structura #9</span>
+              </button>
+              <div class="track-links">
+                <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="infra structura #9 sur Spotify" title="Spotify"></a>
+                <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="infra structura #9 sur Apple Music" title="Apple Music"></a>
+                <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="infra structura #9 sur TIDAL" title="TIDAL"></a>
+                <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="infra structura #9 sur YouTube Music" title="YouTube Music"></a>
+              </div>
+            </div>
+          </li>
+          <li class="track-item">
+            <span class="track-category">Collaboration</span>
+            <div class="track" data-audio="../assets/music/verglas.mp3">
+              <button class="track-main" type="button" aria-label="Lire : Verglas">
+                <span class="track-cover">
+                  <img src="../assets/music/covers/verglas.png" alt="" width="800" height="800" loading="lazy" decoding="async">
+                  <span class="vinyl" aria-hidden="true"></span>
+                </span>
+                <span class="track-title">Verglas</span>
+                <span class="track-credit">avec Magdalena Este</span>
+              </button>
+              <div class="track-links">
+                <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="Verglas sur Spotify" title="Spotify"></a>
+                <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Verglas sur Apple Music" title="Apple Music"></a>
+                <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="Verglas sur TIDAL" title="TIDAL"></a>
+                <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Verglas sur YouTube Music" title="YouTube Music"></a>
+              </div>
+            </div>
+          </li>
+          <li class="track-item">
+            <span class="track-category">Chanson</span>
+            <div class="track" data-audio="../assets/music/koniec-dnia.mp3">
+              <button class="track-main" type="button" aria-label="Lire : Koniec dnia">
+                <span class="track-cover">
+                  <img src="../assets/music/covers/koniec-dnia.png" alt="" width="800" height="800" loading="lazy" decoding="async">
+                  <span class="vinyl" aria-hidden="true"></span>
+                </span>
+                <span class="track-title">Koniec dnia</span>
+              </button>
+              <div class="track-links">
+                <a class="stream-link" data-platform="spotify" href="#" target="_blank" rel="noopener noreferrer" aria-label="Koniec dnia sur Spotify" title="Spotify"></a>
+                <a class="stream-link" data-platform="apple-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Koniec dnia sur Apple Music" title="Apple Music"></a>
+                <a class="stream-link" data-platform="tidal" href="#" target="_blank" rel="noopener noreferrer" aria-label="Koniec dnia sur TIDAL" title="TIDAL"></a>
+                <a class="stream-link" data-platform="youtube-music" href="#" target="_blank" rel="noopener noreferrer" aria-label="Koniec dnia sur YouTube Music" title="YouTube Music"></a>
+              </div>
+            </div>
+          </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="live-section" id="live" aria-labelledby="live-title">
+        <div class="section-panel live-panel">
+          <h2 class="section-title" id="live-title" data-reveal>CONCERTS</h2>
+          <div class="event-list"></div>
+        </div>
+      </section>
+
+      <section class="press-section" id="press" aria-labelledby="press-title">
+        <div class="section-panel">
+          <h2 class="section-title" id="press-title" data-reveal>PRESSE</h2>
+          <p class="press-intro" data-reveal>
+            Dossier de presse, sélection de photos et ressources à télécharger pour les médias, les salles de concert et les partenaires.
+          </p>
+          <div class="press-actions" data-reveal>
+            <a class="press-action" href="../press-kit/kupidura-press-kit.zip" download>TÉLÉCHARGER LE DOSSIER DE PRESSE</a>
+            <a class="press-action" href="../press-kit/kupidura-press-photos.zip" download>PHOTOS DE PRESSE</a>
+            <a class="press-action" href="../press-kit/kupidura-artist-bio-fr.txt" download>BIOGRAPHIE (FR)</a>
+            <a class="press-action" href="mailto:contact@kupidura.music">DEMANDES DE CONCERT</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="announcement" role="status" aria-live="polite" hidden></div>
+    </main>
+    <footer class="site-footer" id="contact" aria-labelledby="footer-name">
+      <h2 id="footer-name">KUPIDURA</h2>
+      <p class="footer-intro">
+        Laissez la musique donner le ton. Pour toute demande de concert, de collaboration ou autre question, contactez-moi.
+      </p>
+
+      <div class="footer-link-group">
+        <h3>Contact</h3>
+        <div class="about-link-row">
+          <a class="profile-link" href="mailto:contact@kupidura.music" aria-label="E-mail contact@kupidura.music" title="E-mail">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="1.5"></rect><path d="m4 7 8 6 8-6"></path>
+            </svg>
+          </a>
+          <a class="profile-link" href="tel:+48660369945" aria-label="Appeler le +48 660 369 945" title="Téléphone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.79a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.89.34 1.83.58 2.79.7A2 2 0 0 1 22 16.92Z"></path>
+              </svg>
+            </a>
+        </div>
+      </div>
+
+      <div class="footer-link-group footer-social-group">
+        <h3>Réseaux sociaux</h3>
+        <div class="about-link-row">
+          <a class="profile-link" href="https://music.apple.com/in/artist/kupidura/1835914619" target="_blank" rel="noopener noreferrer" aria-label="Apple Music" title="Apple Music">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15.4 4.4c.7-.8 1.2-1.8 1.1-2.9-1 .1-2 .7-2.7 1.5-.6.7-1.2 1.8-1 2.8 1 .1 2-.5 2.6-1.4Z"></path><path d="M18.6 12.8c0-2.1 1.7-3.1 1.8-3.2-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.7.8-3.4.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.2-1.6 2.7-.4 6.8 1.1 9 .7 1 1.5 2.1 2.6 2.1 1 0 1.4-.7 2.8-.7s1.8.7 2.9.7 1.8-1 2.5-2c.8-1.1 1.1-2.2 1.1-2.2s-2.5-1-2.5-4.2Z"></path>
+            </svg>
+          </a>
+          <a class="profile-link" href="https://open.spotify.com/artist/4rN70Nw0rWFULGiKsF0tiY" target="_blank" rel="noopener noreferrer" aria-label="Spotify" title="Spotify">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9.5"></circle><path d="M7 9.6c3.6-1 7.2-.7 10.2 1.1M7.7 12.9c2.9-.8 5.6-.5 8.1 1M8.4 15.9c2.1-.6 4.2-.4 6.1.7"></path>
+            </svg>
+          </a>
+          <a class="profile-link" href="https://tidal.com/artist/przemys%C5%82aw-kupidura/21528626" target="_blank" rel="noopener noreferrer" aria-label="TIDAL" title="TIDAL">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="m6 4 2.5 2.5L6 9 3.5 6.5 6 4Zm6 0 2.5 2.5L12 9 9.5 6.5 12 4Zm6 0 2.5 2.5L18 9l-2.5-2.5L18 4ZM9 10l2.5 2.5L9 15l-2.5-2.5L9 10Zm6 0 2.5 2.5L15 15l-2.5-2.5L15 10Zm-3 6 2.5 2.5L12 21l-2.5-2.5L12 16Z"></path>
+            </svg>
+          </a>
+          <a class="profile-link" href="https://music.youtube.com/channel/UC8s8rPPfpeNUm82EppSiUbw" target="_blank" rel="noopener noreferrer" aria-label="YouTube Music" title="YouTube Music">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5.5" width="18" height="13" rx="4"></rect><path d="m10 9 5 3-5 3V9Z" fill="currentColor" stroke="none"></path>
+            </svg>
+          </a>
+          <a class="profile-link" href="https://www.instagram.com/kupidura.music/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.8" cy="6.6" r=".8" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </a>
+          <a class="profile-link" href="https://www.facebook.com/kupidurakompozytor/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle><path d="M13.2 20.8v-7h2.4l.4-2.8h-2.8V9.2c0-.8.3-1.4 1.4-1.4h1.5V5.3c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8V11H7.8v2.8h2.4v7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <p class="footer-copyright">© 2026 KUPIDURA</p>
+    </footer>
+  </body>
+</html>
+
